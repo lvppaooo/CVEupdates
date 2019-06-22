@@ -23,21 +23,22 @@ def crawlToday():
     filename = '../ccpeMonitor/'+str(time.strftime("%m%d%H%M", time.localtime()))+'.txt'
     todayCrawled = codecs.open(filename, "w+")
     todayCrawled.write(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()) )
+    todayCrawled.write("\n")
     if len(today_updates)!=0:
         for update in today_updates:
             todayCrawled.write(update)
+            todayCrawled.write("\n")
 
     return True
 
 if __name__ == "__main__":
 
-    while True:
-        flag = crawlToday()
-        while flag == False:
-            sleep(10)
-            flag = crawlToday()
-        sleep(3600)
-
+   while True:
+       flag = crawlToday()
+       while flag == False:
+           sleep(10)
+           flag = crawlToday()
+       sleep(3600)
 
 
 
