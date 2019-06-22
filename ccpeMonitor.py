@@ -17,6 +17,7 @@ def crawlToday():
     page = etree.HTML(html)
     element_xpath = "/html/body/a/text()"
     today_updates = page.xpath(element_xpath)
+    print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     print(today_updates)
 
     # write a txt file for validation
@@ -36,9 +37,9 @@ if __name__ == "__main__":
    while True:
        flag = crawlToday()
        while flag == False:
-           sleep(10)
+           time.sleep(10)
            flag = crawlToday()
-       sleep(3600)
+       time.sleep(3600)
 
 
 
