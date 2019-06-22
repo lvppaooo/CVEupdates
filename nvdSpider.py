@@ -1,3 +1,4 @@
+# encoding:utf-8
 import requests
 from lxml import etree
 import codecs
@@ -8,27 +9,35 @@ import random
 import datetime as dt
 
 '''
-VULinfo字段
+VULinfo
 
--- idVULinfo: INT, autoIncreasnig，
--- CVEID: VARCHAR
-ok: description: TEXT
-ok: priority: VARCHAR
-??: solutionStatus: VARCHAR
-ok: attackVector: VARCHAR
-ok: impact: TEXT
--- affectedComponent: TEXT (dynamic)
--- solutions: VARCHAR
-ok: vendorAdvisories: TEXT
-ok: references: TEXT
+idVULinfo: INT, autoIncreasnig，
+CVEID: VARCHAR
+description: TEXT
+priority: VARCHAR
+solutionStatus: VARCHAR
+attackVector: VARCHAR
+impact: TEXT
+affectedComponent: TEXT (dynamic)
+solutions: VARCHAR
+vendorAdvisories: TEXT
+references: TEXT
 '''
+
+
 connection = pymysql.connect(host='localhost',
                        user='root',
                        password='123456',
                        db='timo',
                        charset='utf8')
 
-
+'''
+connection = pymysql.connect(host='localhost',
+                       user='root',
+                       password='root0303',
+                       db='timo',
+                       charset='utf8')
+'''
 
 def nvdSpider(CVEname):
 
@@ -44,9 +53,10 @@ def nvdSpider(CVEname):
     solutions=[]
     vendorAdvisories=''
     references=[]
+    booked=0
 
     try:
-        response = requests.get(url, timeout=(3, 7))
+        response = requests.get(url, timeout=(10, 10))
     except requests.exceptions.RequestException as e:
         print(CVEname, "Time Out")
         return False
@@ -178,10 +188,31 @@ def nvdSpider(CVEname):
     #print(type(attackVector))
     current_time = dt.datetime.now()
     current_time = current_time.strftime("%Y-%m-%d %H:%M:00")
+
+    ##DATABASE UPDATE RULES:
+
+
+
     cursor = connection.cursor()
-    sql = "insert into nvds (cveid, description, priority, solution_status, attack_vector, impact, affected_components, solutions, vendor_advisories, hyperlink_references, create_date) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(sql, (CVEname, description, priority, str(solutionStatus), attackVector, str(impact), str(affectedComponents), str(solutions), str(vendorAdvisories), str(references), current_time))
-    connection.commit()
+
+    sql = "select * from nvds where cveid=%s"
+    cursor.execute(sql, (CVEname, ))
+    results = cursor.fetchall()
+    if len(results) != 0:
+        booked = results[0][-1]
+
+        sql = "update nvds set description=%s, priority=%s, solution_status=%s, attack_vector=%s, impact=%s, affected_components=%s, solutions=%s, vendor_advisories=%s, hyperlink_references=%s, create_date=%s, booked=%s where cveid=%s"
+        cursor.execute(sql, (
+        description, priority, str(solutionStatus), attackVector, str(impact), str(affectedComponents),
+        str(solutions), str(vendorAdvisories), str(references), current_time, booked, CVEname))
+        connection.commit()
+    else:
+        sql = "insert into nvds (cveid, description, priority, solution_status, attack_vector, impact, affected_components, solutions, vendor_advisories, hyperlink_references, create_date, booked) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        cursor.execute(sql, (
+        CVEname, description, priority, str(solutionStatus), attackVector, str(impact), str(affectedComponents),
+        str(solutions), str(vendorAdvisories), str(references), current_time, booked))
+        connection.commit()
+
     cursor.close()
    # sleep_time = random.random()
    # time.sleep(sleep_time)
@@ -209,4 +240,4 @@ def getCpeUris(cpeFactId):
 
 
 
-#nvdSpider('CVE-2018-4845')
+#nvdSpider('CVE-2019-11362')
