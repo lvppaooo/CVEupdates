@@ -4,12 +4,13 @@ from nvdSpider import nvdSpider
 import pymysql
 import random
 import time
+from config import * 
 
 
 connection = pymysql.connect(host='localhost',
-                       user='root',
-                       password='123456',
-                       db='timo',
+                       user=DB_user,
+                       password=DB_password,
+                       db=DB_name,
                        charset='utf8')
 
 cursor = connection.cursor()

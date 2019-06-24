@@ -7,6 +7,7 @@ import pymysql
 import time
 import random
 import datetime as dt
+from config import * 
 
 '''
 VULinfo
@@ -26,9 +27,9 @@ references: TEXT
 
 
 connection = pymysql.connect(host='localhost',
-                       user='root',
-                       password='123456',
-                       db='timo',
+                       user=DB_user,
+                       password=DB_password,
+                       db=DB_name,
                        charset='utf8')
 
 '''
