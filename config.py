@@ -1,5 +1,5 @@
 
 
 DB_user = 'root'
-DB_password = '123456'
+DB_password = 'root0303'
 DB_name = 'timo'

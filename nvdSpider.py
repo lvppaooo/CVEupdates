@@ -9,6 +9,7 @@ import random
 import datetime as dt
 from config import * 
 import time
+import logging
 '''
 VULinfo
 
@@ -41,9 +42,12 @@ connection = pymysql.connect(host='localhost',
 '''
 
 def nvdSpider(CVEname):
+    logging.basicConfig(filename="dailyUpdate.log", filemode="w",
+                        format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
+                        datefmt="%d-%M-%Y %H:%M:%S", level=logging.INFO)
     print(time.asctime(time.localtime(time.time()))+": Crawling "+CVEname)
     url = "https://nvd.nist.gov/vuln/detail/"+CVEname
-    print("url: ", url)
+    #print("url: ", url)
 
     description=''
     priority=''
@@ -215,6 +219,7 @@ def nvdSpider(CVEname):
         connection.commit()
 
     cursor.close()
+    logging.info(CVEname+" crawling finished")
    # sleep_time = random.random()
    # time.sleep(sleep_time)
     return True
