@@ -8,7 +8,7 @@ import time
 import random
 import datetime as dt
 from config import * 
-
+import time
 '''
 VULinfo
 
@@ -41,7 +41,7 @@ connection = pymysql.connect(host='localhost',
 '''
 
 def nvdSpider(CVEname):
-
+    print(time.asctime(time.localtime(time.time()))+": Crawling "+CVEname)
     url = "https://nvd.nist.gov/vuln/detail/"+CVEname
     print("url: ", url)
 

@@ -33,5 +33,5 @@ def dailyUpdateByBooked():
 
 
 
-dailyUpdateByBooked()
+
 

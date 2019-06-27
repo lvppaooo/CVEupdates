@@ -34,9 +34,9 @@ def dailyUpdateByCcpe():
 
     while len(cvenames)!=0:
         for cvename in cvenames:
-            flag = nvdSpider(cvename)
+            flag = nvdSpider("CVE-"+cvename)
             if flag == True:
                 cvenames.remove(cvename)
 
 
-dailyUpdateByCcpe()
+
