@@ -16,4 +16,4 @@ if __name__ == "__main__":
         dailyUpdateByCcpe()
        #dailyUpdateByBooked()
         logging.info("Daily Update Finished.")
-        time.sleep(60*60*6)
+        time.sleep(60*60*24)
