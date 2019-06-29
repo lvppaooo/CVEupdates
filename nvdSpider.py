@@ -27,11 +27,7 @@ references: TEXT
 '''
 
 
-connection = pymysql.connect(host='localhost',
-                       user=DB_user,
-                       password=DB_password,
-                       db=DB_name,
-                       charset='utf8')
+
 
 '''
 connection = pymysql.connect(host='localhost',
@@ -41,7 +37,7 @@ connection = pymysql.connect(host='localhost',
                        charset='utf8')
 '''
 
-def nvdSpider(CVEname):
+def nvdSpider(connection, CVEname):
     logging.basicConfig(filename="dailyUpdate.log", filemode="w",
                         format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
                         datefmt="%d-%M-%Y %H:%M:%S", level=logging.INFO)
@@ -183,20 +179,8 @@ def nvdSpider(CVEname):
         ref_resources.append(labels)
 
 
-
-
-    #print("vendorAdvisories:", vendorAdvisories)
-    #print("solutions: ", solutions)
-    #print("solutionStatus: ", solutionStatus)
-    #print("references: ", references)
-    #print(len(attackVector))
-    #print(type(attackVector))
     current_time = dt.datetime.now()
     current_time = current_time.strftime("%Y-%m-%d %H:%M:00")
-
-    ##DATABASE UPDATE RULES:
-
-
 
     cursor = connection.cursor()
 

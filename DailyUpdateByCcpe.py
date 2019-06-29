@@ -7,17 +7,12 @@ import time
 import logging
 
 
-connection = pymysql.connect(host='localhost',
-                       user=DB_user,
-                       password=DB_password,
-                       db=DB_name,
-                       charset='utf8')
 
-cursor = connection.cursor()
 
-today_url = "https://cassandra.cerias.purdue.edu/CVE_changes/today.html"
 
-def dailyUpdateByCcpe():
+
+def dailyUpdateByCcpe(connection):
+
 
     logging.basicConfig(filename="dailyUpdate.log", filemode="w",
                         format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
@@ -41,7 +36,7 @@ def dailyUpdateByCcpe():
 
     while len(cvenames)!=0:
         for cvename in cvenames:
-            flag = nvdSpider("CVE-"+cvename)
+            flag = nvdSpider(connection, "CVE-"+cvename)
             if flag == True:
                 cvenames.remove(cvename)
 
