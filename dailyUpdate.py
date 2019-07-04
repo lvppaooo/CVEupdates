@@ -2,6 +2,7 @@ from DailyUpdateByBooked import *
 from DailyUpdateByCcpe import *
 import time
 import logging
+from config import UPDATE_MODE
 
 
 if __name__ == "__main__":
@@ -23,8 +24,13 @@ if __name__ == "__main__":
                                      db=DB_name,
                                      charset='utf8')
        
-        dailyUpdateByCcpe(connection)
-       #dailyUpdateByBooked()
+        if UPDATE_MODE == "CCPE":
+            dailyUpdateByCcpe(connection)
+        elif UPDATE_MODE == "BOOKED":
+            dailyUpdateByBooked(connection)
+        else:
+            pass
+
         logging.info("Daily Update Finished.")
         print(time.asctime(time.localtime(time.time()))+"Daily Update Finished")
         connection.close()

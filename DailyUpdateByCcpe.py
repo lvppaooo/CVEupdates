@@ -7,10 +7,6 @@ import time
 import logging
 
 
-
-
-
-
 def dailyUpdateByCcpe(connection):
 
 

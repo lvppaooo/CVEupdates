@@ -10,6 +10,7 @@ import datetime as dt
 from config import * 
 import time
 import logging
+import pylint
 '''
 VULinfo
 
@@ -29,13 +30,13 @@ references: TEXT
 
 
 
-'''
+
 connection = pymysql.connect(host='localhost',
                        user='root',
                        password='root0303',
                        db='timo',
                        charset='utf8')
-'''
+
 
 def nvdSpider(connection, CVEname):
     logging.basicConfig(filename="dailyUpdate.log", filemode="w",
@@ -187,6 +188,17 @@ def nvdSpider(connection, CVEname):
     sql = "select * from nvds where cveid=%s"
     cursor.execute(sql, (CVEname, ))
     results = cursor.fetchall()
+
+    if len(results)!=0:
+        stored_info = results[0]
+        print(stored_info)
+        print(str((results[0][0], CVEname, description, priority, str(solutionStatus), attackVector, str(impact), str(affectedComponents), str(solutions), str(vendorAdvisories), str(references), results[0][-2], results[0][-1])))
+    #print(str((results[0][0], CVEname, description, priority, solutionStatus, attackVector, str(impact), affectedComponents, solutions, vendorAdvisories, references, results[0][-2], results[0][-1])))
+        if stored_info == (results[0][0], CVEname, description, priority, str(solutionStatus), attackVector, str(impact), str(affectedComponents), str(solutions), str(vendorAdvisories), str(references), results[0][-2], results[0][-1]):
+            logging.info("Booked "+str(CVEname)+" has not been updated")
+            #print("No Change")
+            return True
+
     if len(results) != 0:
         booked = results[0][-1]
 
@@ -223,6 +235,7 @@ def getCpeUris(cpeFactId):
             cpeUris.append(response_json["cpes"]["cpes"][i]["cpeUri"])
         return cpeUris
     except:
+        print("Exception")
         return []
 
 #uris = getCpeUris("5082901")
@@ -230,4 +243,4 @@ def getCpeUris(cpeFactId):
 
 
 
-#nvdSpider('CVE-2019-11362')
+nvdSpider(connection, 'CVE-1999-0011')
