@@ -31,9 +31,9 @@ references: TEXT
 
 
 
-connection = pymysql.connect(host='localhost',
+connection = pymysql.connect(host='47.103.76.55',
                        user='root',
-                       password='root0303',
+                       password='123456',
                        db='timo',
                        charset='utf8')
 
@@ -55,7 +55,10 @@ def nvdSpider(connection, CVEname):
     solutions=[]
     vendorAdvisories=''
     references=[]
-    booked=0
+    booked=None
+    published_date = None
+    last_modified_date = None
+
 
     try:
         response = requests.get(url, timeout=(10, 10))
@@ -188,6 +191,37 @@ def nvdSpider(connection, CVEname):
     sql = "select * from nvds where cveid=%s"
     cursor.execute(sql, (CVEname, ))
     results = cursor.fetchall()
+    print("results: ", results)
+
+    published_date_xpath = "//*[@id=\"p_lt_WebPartZone1_zoneCenter_pageplaceholder_p_lt_WebPartZone1_zoneCenter_VulnerabilityDetail_VulnFormView\"]//div/div[2]/div/span[1]/text()"
+    published_date = page.xpath(published_date_xpath)
+
+    print("published date: ", published_date)
+
+    last_modified_xpath = "//*[@id=\"p_lt_WebPartZone1_zoneCenter_pageplaceholder_p_lt_WebPartZone1_zoneCenter_VulnerabilityDetail_VulnFormView\"]//div/div[2]/div/span[2]/text()"
+    last_modified_date = page.xpath(last_modified_xpath)
+    print("last modified: ", last_modified_date)
+
+    if len(published_date)!=0:
+        string_published_date = published_date[0]
+
+    if len(last_modified_date)!=0:
+        string_last_modified = last_modified_date[0]
+
+    published_year = int(string_published_date.split("/")[-1])
+    published_month = int(string_published_date.split("/")[0])
+    published_day = int(string_published_date.split("/")[1])
+
+    published_date = dt.datetime(published_year, published_month, published_day)
+
+
+    lm_year = int(string_last_modified.split("/")[-1])
+    lm_month = int(string_last_modified.split("/")[0])
+    lm_day = int(string_last_modified.split("/")[1])
+
+    last_modified_date = dt.datetime(lm_year, lm_month, lm_day)
+    print(published_date)
+    print(last_modified_date)
 
     if len(results)!=0:
         stored_info = results[0]
@@ -200,18 +234,18 @@ def nvdSpider(connection, CVEname):
             return True
 
     if len(results) != 0:
-        booked = results[0][-1]
+        booked = results[0][-3]
 
-        sql = "update nvds set description=%s, priority=%s, solution_status=%s, attack_vector=%s, impact=%s, affected_components=%s, solutions=%s, vendor_advisories=%s, hyperlink_references=%s, create_date=%s, booked=%s where cveid=%s"
+        sql = "update nvds set description=%s, priority=%s, solution_status=%s, attack_vector=%s, impact=%s, affected_components=%s, solutions=%s, vendor_advisories=%s, hyperlink_references=%s, create_date=%s, booked=%s, published_date=%s, last_modified=%s where cveid=%s"
         cursor.execute(sql, (
         description, priority, str(solutionStatus), attackVector, str(impact), str(affectedComponents),
-        str(solutions), str(vendorAdvisories), str(references), current_time, booked, CVEname))
+        str(solutions), str(vendorAdvisories), str(references), current_time, booked, published_date, last_modified_date, CVEname))
         connection.commit()
     else:
-        sql = "insert into nvds (cveid, description, priority, solution_status, attack_vector, impact, affected_components, solutions, vendor_advisories, hyperlink_references, create_date, booked) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = "insert into nvds (cveid, description, priority, solution_status, attack_vector, impact, affected_components, solutions, vendor_advisories, hyperlink_references, create_date, booked, published_date, last_modified) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         cursor.execute(sql, (
         CVEname, description, priority, str(solutionStatus), attackVector, str(impact), str(affectedComponents),
-        str(solutions), str(vendorAdvisories), str(references), current_time, booked))
+        str(solutions), str(vendorAdvisories), str(references), current_time, booked, published_date, last_modified_date))
         connection.commit()
 
     cursor.close()
@@ -234,8 +268,8 @@ def getCpeUris(cpeFactId):
         for i in range(len(response_json["cpes"]["cpes"])):
             cpeUris.append(response_json["cpes"]["cpes"][i]["cpeUri"])
         return cpeUris
-    except:
-        print("Exception")
+    except Exception as e:
+        print("Exception", e)
         return []
 
 #uris = getCpeUris("5082901")
