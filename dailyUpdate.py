@@ -28,4 +28,4 @@ if __name__ == "__main__":
         logging.info("Daily Update Finished.")
         print(time.asctime(time.localtime(time.time()))+"Daily Update Finished")
         connection.close()
-        #time.sleep(60*60*24)
+        time.sleep(60*60*24)
