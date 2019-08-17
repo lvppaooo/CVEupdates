@@ -7,10 +7,6 @@ import time
 import logging
 
 
-
-
-
-
 def dailyUpdateByCcpe(connection):
 
 
@@ -39,6 +35,8 @@ def dailyUpdateByCcpe(connection):
             flag = nvdSpider(connection, "CVE-"+cvename)
             if flag == True:
                 cvenames.remove(cvename)
+
+            print(str(len(cvenames))+" to be crawled")
 
     logging.info(str(num)+" CVEs updated")
 

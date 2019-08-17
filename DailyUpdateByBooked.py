@@ -1,17 +1,16 @@
 import pymysql
 from config import *
 from nvdSpider import nvdSpider
+import logging
 
 
-connection = pymysql.connect(host='localhost',
-                       user=DB_user,
-                       password=DB_password,
-                       db=DB_name,
-                       charset='utf8')
+def dailyUpdateByBooked(connection):
 
-cursor = connection.cursor()
+    cursor = connection.cursor()
 
-def dailyUpdateByBooked():
+    logging.basicConfig(filename="dailyUpdate.log", filemode="w",
+                        format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
+                        datefmt="%d-%M-%Y %H:%M:%S", level=logging.INFO)
 
     cvenames = []
 
@@ -27,7 +26,7 @@ def dailyUpdateByBooked():
 
     while len(cvenames)!=0:
         for cvename in cvenames:
-            flag = nvdSpider(cvename)
+            flag = nvdSpider(connection, cvename)
             if flag == True:
                 cvenames.remove(cvename)
 
