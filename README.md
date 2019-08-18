@@ -23,6 +23,14 @@ Info Crawled from NVD:
     sudo apt-get install mysql-client
     sudo apt-get install libmysqlclient-dev
 
+2. 登录mysql数据库并导入数据库文件
+    mysql -u root -p
+    (输入密码)
+    mysql> use timo
+    mysql> source nvds.sql
+
+3. 安装python3.4+
+    p
 ```
 
 ```
