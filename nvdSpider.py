@@ -29,15 +29,6 @@ references: TEXT
 
 
 
-
-
-connection = pymysql.connect(host='47.103.76.55',
-                       user='root',
-                       password='123456',
-                       db='timo',
-                       charset='utf8')
-
-
 def nvdSpider(connection, CVEname):
     logging.basicConfig(filename="dailyUpdate.log", filemode="w",
                         format="%(asctime)s %(name)s:%(levelname)s:%(message)s",
@@ -68,9 +59,9 @@ def nvdSpider(connection, CVEname):
     html = response.content.decode(response.encoding)
 
     #write a html file for validation
-    nvdCrawled = codecs.open('nvd.html', "w+")
-    for line in html:
-        nvdCrawled.write(line)
+    #nvdCrawled = codecs.open('nvd.html', "w+")
+    #for line in html:
+    #   nvdCrawled.write(line)
 
     page = etree.HTML(html)
 
@@ -277,4 +268,4 @@ def getCpeUris(cpeFactId):
 
 
 
-#nvdSpider(connection, 'CVE-1999-0011')
+

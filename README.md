@@ -13,3 +13,42 @@ Info Crawled from NVD:
 * solutions
 * vendor advisories
 * references
+
+## 项目部署
+（在本目录下执行）
+```
+1. 安装mysql   
+    sudo apt-get install mysql-server
+    安装过程中输入密码（默认123456）
+    sudo apt-get install mysql-client
+    sudo apt-get install libmysqlclient-dev
+
+```
+
+```
+    (搭建python虚环境)
+    python -m venv cveupdates_venv
+    source cveupdates_venv/bin/activate
+    pip install requirements.txt
+    deactivate
+
+    （安装screen)
+    sudo apt-get update
+    sudo apt-get install screen 
+```
+
+## CVE监测部分爬虫部署
+（在本目录下执行）
+
+```
+    screen -S spider
+    (跳入新窗口)
+
+    source cveupdates_venv/bin/activate
+    (激活虚环境)
+    python dailyUpdate.py
+
+    Ctrl+A 
+    D 
+
+```
